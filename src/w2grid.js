@@ -7350,7 +7350,7 @@ class w2grid extends w2base {
                 case 'list':
                 case 'combo':
                 case 'enum':
-                    tmpStyle = 'width: 250px;'
+                    tmpStyle = 'width: 200px;'
                     if (['hex', 'color'].indexOf(s.type) != -1) tmpStyle = 'width: 90px;'
                     columns[col_ind] += `<input rel="search" type="text" id="grid_${this.name}_field_${i}" name="${s.field}"
                                class="w2ui-input" style="${tmpStyle + s.style}" ${s.attr}>`

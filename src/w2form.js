@@ -183,6 +183,7 @@ class w2form extends w2base {
                 Object.keys(tmp).forEach((key) => {
                     let fld = tmp[key]
                     if (fld.type == 'group') {
+                        fld._text = fld.text // need to save, so it will propoagate to fields
                         fld.text = key
                         if (w2utils.isPlainObject(fld.fields)) {
                             let tmp2 = fld.fields
@@ -190,6 +191,12 @@ class w2form extends w2base {
                             Object.keys(tmp2).forEach((key2) => {
                                 let fld2 = tmp2[key2]
                                 fld2.field = key2
+                                if (fld2.class == null && fld2.html?.class == null && fld.class) {
+                                    fld2.class = fld.class
+                                }
+                                if (fld2.text == null && fld2.html?.text == null && fld._text) {
+                                    fld2.text = fld._text
+                                }
                                 fld.fields.push(_process(fld2))
 
                             })
@@ -216,12 +223,13 @@ class w2form extends w2base {
                     }
                 })
 
+                // process group fields
                 function _process(fld) {
                     let ignore = ['html']
-                    if (fld.html == null) fld.html = {}
+                    fld.html ??= {}
                     Object.keys(fld).forEach((key => {
                         if (ignore.includes(key)) return
-                        if (['label', 'attr', 'style', 'text', 'span', 'page', 'column', 'anchor',
+                        if (['label', 'attr', 'style', 'text', 'span', 'page', 'column', 'anchor', 'class',
                             'group', 'groupStyle', 'groupTitleStyle', 'groupCollapsible'].includes(key)) {
                             fld.html[key] = fld[key]
                             delete fld[key]
@@ -230,12 +238,13 @@ class w2form extends w2base {
                     return fld
                 }
 
+                // process tab fields
                 function _process2(fld, fld2) {
                     let ignore = ['style', 'html']
                     Object.keys(fld).forEach((key => {
                         if (ignore.includes(key)) return
                         if (['span', 'column', 'attr', 'text', 'label'].includes(key)) {
-                            if (fld[key] && !fld2.html[key]) {
+                            if (fld[key] != null && fld2.html[key] == null) {
                                 fld2.html[key] = fld[key]
                             }
                         }
@@ -258,7 +267,7 @@ class w2form extends w2base {
                             let fld = w2utils.clone(gfield)
                             if (fld.html == null) fld.html = {}
                             w2utils.extend(fld.html, group)
-                            Array('span', 'column', 'attr', 'label', 'page').forEach(key => {
+                            Array('span', 'column', 'page', 'attr', 'label').forEach(key => {
                                 if (fld.html[key] == null && field[key] != null) {
                                     fld.html[key] = field[key]
                                 }
@@ -1499,11 +1508,17 @@ class w2form extends w2base {
                 case 'textarea':
                     input = `<textarea id="${field.field}" name="${field.field}" class="w2ui-input ${field.html.class ?? ''}" ${field.html.attr + tabindex_str}></textarea>`
                     break
-                case 'toggle':
-                    input = `<input id="${field.field}" name="${field.field}" class="w2ui-input w2ui-toggle  ${field.html.class ?? ''}"
+                case 'toggle': {
+                    let txt = field.html.text ?? ''
+                    if (txt?.substring?.(0, 1) != '<') {
+                        txt = `<span style="position: relative; left: 4px; top: -4px">${txt}</span>`
+                    }
+                    input = `<input id="${field.field}" name="${field.field}" class="w2ui-input w2ui-toggle w2ui-small ${field.html.class ?? ''}"
                                 type="checkbox" ${field.html.attr + tabindex_str}>
-                            <div><div></div></div>`
+                            <div><div></div></div>
+                            ${txt}`
                     break
+                }
                 case 'map':
                 case 'array':
                     field.html.key = field.html.key || {}
@@ -1601,7 +1616,7 @@ class w2form extends w2base {
                         ${w2utils.lang(field.type != 'checkbox' ? field.html.label : field.html.text)}
                     </label>`
                 if (!field.html.label) label = ''
-                let text = (field.type != 'array' && field.type != 'map' ? w2utils.lang(field.type != 'checkbox' ? field.html.text : '') : '')
+                let text = (field.type != 'array' && field.type != 'map' ? w2utils.lang(field.type != 'checkbox' && field.type != 'toggle' ? field.html.text : '') : '')
                 html += `
                     <div class="w2ui-field ${span}" style="${(field.hidden ? 'display: none;' : '') + field.html.style}">
                         ${label}
