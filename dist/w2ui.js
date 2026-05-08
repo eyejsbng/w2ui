@@ -1,4 +1,4 @@
-/* w2ui 2.0.x (nightly) (5/8/2026, 11:18:08 AM) (c) http://w2ui.com, vitmalina@gmail.com */
+/* w2ui 2.0.x (nightly) (5/8/2026, 4:23:51 PM) (c) http://w2ui.com, vitmalina@gmail.com */
 /**
  * Part of w2ui 2.0 library
  *  - Dependencies: w2utils
@@ -4696,8 +4696,8 @@ class Tooltip {
         overlay.box.overlay = overlay
         // click / drag: raise stacking order among sibling overlays (DOM order, not z-index)
         query(overlay.box)
-            .off('mousedown.w2ui-bringfront')
-            .on('mousedown.w2ui-bringfront', () => {
+            .off('click.w2ui-bringfront') // event needs to be click, so that other event handlers, mousedown, mouseup, etc. are triggered
+            .on('click.w2ui-bringfront', () => {
                 self.bringOverlayToFront(overlay)
             })
         // event after
