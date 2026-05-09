@@ -1,4 +1,4 @@
-/* w2ui 2.0.x (nightly) (5/8/2026, 4:23:51 PM) (c) http://w2ui.com, vitmalina@gmail.com */
+/* w2ui 2.0.x (nightly) (5/9/2026, 7:07:26 AM) (c) http://w2ui.com, vitmalina@gmail.com */
 /**
  * Part of w2ui 2.0 library
  *  - Dependencies: w2utils
@@ -1871,8 +1871,8 @@ class Utils {
         if (!options.msg && options.msg !== 0) options.msg = ''
         this.unlock(box)
         let el = query(box).get(0)
-        let pWidth = el.scrollWidth
-        let pHeight = el.scrollHeight
+        let pWidth = el?.scrollWidth
+        let pHeight = el?.scrollHeight
         // if it is body and only has absolute elements, its height will be 0, need to lock entire window
         let style = `height: ${pHeight}px; width: ${pWidth}px`
         if (el.tagName == 'BODY') {
