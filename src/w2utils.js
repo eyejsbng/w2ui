@@ -941,11 +941,12 @@ class Utils {
         if (!options.msg && options.msg !== 0) options.msg = ''
         this.unlock(box)
         let el = query(box).get(0)
+        if (el == null) return
         let pWidth = el?.scrollWidth
         let pHeight = el?.scrollHeight
         // if it is body and only has absolute elements, its height will be 0, need to lock entire window
         let style = `height: ${pHeight}px; width: ${pWidth}px`
-        if (el.tagName == 'BODY') {
+        if (el?.tagName == 'BODY') {
             style = 'position: fixed; right: 0; bottom: 0;'
         }
         query(box).prepend(
