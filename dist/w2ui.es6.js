@@ -1,4 +1,4 @@
-/* w2ui 2.0.x (nightly) (5/9/2026, 7:11:32 AM) (c) http://w2ui.com, vitmalina@gmail.com */
+/* w2ui 2.0.x (nightly) (5/14/2026, 4:24:23 PM) (c) http://w2ui.com, vitmalina@gmail.com */
 /**
  * Part of w2ui 2.0 library
  *  - Dependencies: w2utils
@@ -8828,7 +8828,6 @@ class w2sidebar extends w2base {
         }
     }
     find(parent, params, results) { // can be just called find({ selected: true })
-        // TODO: rewrite with this.each()
         if (arguments.length == 1) {
             // need to be in reverse order
             params = parent
@@ -8838,14 +8837,16 @@ class w2sidebar extends w2base {
         // searches all nested nodes
         if (typeof parent == 'string') parent = this.get(parent)
         if (parent.nodes == null) return results
-        for (let i = 0; i < parent.nodes.length; i++) {
+        this.each(node => {
             let match = true
             for (let prop in params) { // params is an object
-                if (parent.nodes[i][prop] != params[prop]) match = false
+                if (node[prop] != params[prop]) {
+                    match = false
+                    break
+                }
             }
-            if (match) results.push(parent.nodes[i])
-            if (parent.nodes[i].nodes.length > 0) results = this.find(parent.nodes[i], params, results)
-        }
+            if (match) results.push(node)
+        }, parent.nodes)
         return results
     }
     sort(options, nodes) {
