@@ -622,8 +622,14 @@ class Tooltip {
         let content = overlay.box.getBoundingClientRect()
         let anchor = overlay.anchor?.getBoundingClientRect?.()
 
-        // minimal width should be a least content width (avoid slow expansion of the tooltip bug)
-        let min_width = w2utils.getStrWidth(options.html, '', true)
+        // minimal width should be at least content width (avoid slow expansion of the tooltip bug).
+        // Prefer the rendered body's scrollWidth: it uses the real tooltip font/padding and reflects the true
+        // content width even when the outer (fixed, shrink-to-fit) overlay box clamps it. getStrWidth measures
+        // with the page's default font and ignores maxWidth/wrapping, which mis-centers the tooltip (the wider
+        // the content, the further off it lands). Fall back to getStrWidth only before the body is rendered.
+        let body = overlay.box.querySelector('.w2ui-overlay-body')
+        let min_width = (body && body.scrollWidth) ? body.scrollWidth : w2utils.getStrWidth(options.html, '', true)
+        if (options.maxWidth && min_width > options.maxWidth) min_width = options.maxWidth
         if (content.width < min_width) content.width = min_width
 
         if (overlay.anchor == document.body) {
