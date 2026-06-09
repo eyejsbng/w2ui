@@ -1,4 +1,4 @@
-/* w2ui 2.0.x (nightly) (5/28/2026, 3:59:08 PM) (c) http://w2ui.com, vitmalina@gmail.com */
+/* w2ui 2.0.x (nightly) (6/9/2026, 2:27:52 PM) (c) http://w2ui.com, vitmalina@gmail.com */
 /**
  * Part of w2ui 2.0 library
  *  - Dependencies: w2utils
@@ -5324,7 +5324,7 @@ class ColorTooltip extends Tooltip {
         if (edata.isCancelled === true) return
         // if anchor is input - live update
         if (['INPUT', 'TEXTAREA'].includes(overlay.anchor.tagName) && overlay.options.updateInput) {
-            query(overlay.anchor).val(color)
+            query(overlay.anchor).val(color).trigger('input')
         }
         overlay.newColor = color
         query(overlay.box).find('.w2ui-color.w2ui-selected').removeClass('w2ui-selected')
