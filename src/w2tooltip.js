@@ -1058,7 +1058,7 @@ class ColorTooltip extends Tooltip {
         if (edata.isCancelled === true) return
         // if anchor is input - live update
         if (['INPUT', 'TEXTAREA'].includes(overlay.anchor.tagName) && overlay.options.updateInput) {
-            query(overlay.anchor).val(color)
+            query(overlay.anchor).val(color).trigger('input')
         }
         overlay.newColor = color
         query(overlay.box).find('.w2ui-color.w2ui-selected').removeClass('w2ui-selected')
